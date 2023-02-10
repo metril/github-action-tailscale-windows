@@ -34,7 +34,9 @@ runs:
       - name: Download Tailscale
         shell: powershell
         id: download
-        run: Invoke-WebRequest -Uri "https://pkgs.tailscale.com/stable/tailscale-setup-1.36.1-amd64.msi" -o tailscale.msi
+        run: |
+          Invoke-WebRequest -Uri "https://pkgs.tailscale.com/stable/tailscale-setup-1.36.1-amd64.msi" -o tailscale.msi
+          msiexec /i tailscale.msi
       - name: Run Tailscale
         shell: powershell
         env:
