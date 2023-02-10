@@ -38,31 +38,14 @@ runs:
           echo "::error title=⛔ error hint::Auth key empty, Maybe you need to populate it in the Secrets for your workflow, see more in https://docs.github.com/en/actions/security-guides/encrypted-secrets"
           exit 1
       - name: Download Tailscale
-        shell: bash
+        shell: powershell
         id: download
-        env:
-          VERSION: ${{ inputs.version }}
-        run: |
-          MINOR=$(echo "$VERSION" | awk -F '.' {'print $2'})
-          if [ $((MINOR % 2)) -eq 0 ]; then
-            URL="https://pkgs.tailscale.com/stable/tailscale_${VERSION}_amd64.tgz"
-          else
-            URL="https://pkgs.tailscale.com/unstable/tailscale_${VERSION}_amd64.tgz"
-          fi
-          curl "$URL" -o tailscale.tgz
-          tar -C /tmp -xzf tailscale.tgz
-          rm tailscale.tgz
-          TSPATH=/tmp/tailscale_${VERSION}_amd64
-          sudo mv "${TSPATH}/tailscale" "${TSPATH}/tailscaled" /usr/bin
+        run: Invoke-WebRequest -Uri "https://pkgs.tailscale.com/stable/tailscale-setup-1.36.1-amd64.msi" -o tailscale.msi
       - name: Run Tailscale
-        shell: bash
+        shell: powershell
         env:
           TAILSCALE_AUTHKEY: ${{ inputs.authkey }}
           ADDITIONAL_ARGS: ${{ inputs.args }}
           HOSTNAME: ${{ inputs.hostname }}
         run: |
-          sudo tailscaled 2>~/tailscaled.log &
-          if [ -z "${HOSTNAME}" ]; then
-            HOSTNAME="github-$(cat /etc/hostname)"
-          fi
-          sudo tailscale up --authkey ${TAILSCALE_AUTHKEY} --hostname=${HOSTNAME} --accept-routes ${ADDITIONAL_ARGS}
+          tailscale up --authkey ${TAILSCALE_AUTHKEY} --hostname=${HOSTNAME} --accept-routes ${ADDITIONAL_ARGS}
