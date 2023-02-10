@@ -38,7 +38,7 @@ runs:
           Invoke-WebRequest -Uri "https://pkgs.tailscale.com/stable/tailscale-setup-1.36.1-amd64.msi" -o tailscale.msi
           msiexec /i tailscale.msi
       - name: Run Tailscale
-        shell: powershell
+        shell: cmd
         env:
           TAILSCALE_AUTHKEY: ${{ inputs.authkey }}
           ADDITIONAL_ARGS: ${{ inputs.args }}
