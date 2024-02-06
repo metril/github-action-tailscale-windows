@@ -44,4 +44,4 @@ runs:
           ADDITIONAL_ARGS: ${{ inputs.args }}
           HOSTNAME: ${{ inputs.hostname }}
         run: |
-          tailscale up --authkey ${TAILSCALE_AUTHKEY} --hostname=${HOSTNAME} --accept-routes ${ADDITIONAL_ARGS}
+          tailscale up --authkey ${TAILSCALE_AUTHKEY}?ephemeral=true&preauthorized=true --advertise-tags=tag:ci --hostname=${HOSTNAME} --accept-routes ${ADDITIONAL_ARGS}
